@@ -1,0 +1,2 @@
+rootProject.name='FinalMobileComputingProject'
+include ':app'
