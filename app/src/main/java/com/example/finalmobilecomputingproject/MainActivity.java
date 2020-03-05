@@ -53,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         //get the image which was taken back from the user
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            uiTakePictureImageButton.setImageBitmap(imageBitmap);
+        if(requestCode == REQUEST_IMAGE_CAPTURE){
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                uiTakePictureImageButton.setImageBitmap(imageBitmap);
+            }
         }
     }
 }
