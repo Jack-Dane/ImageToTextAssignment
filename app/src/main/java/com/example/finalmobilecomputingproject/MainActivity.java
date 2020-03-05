@@ -1,5 +1,6 @@
 package com.example.finalmobilecomputingproject;
 
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -33,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton uiTakePictureImageButton;
     private String currentPhotoPath;
-    private File sourceFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     public void openCamera(View view){
         if(askForCameraPermission()){
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File sourceFile;
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 sourceFile = null;
                 try{
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(sourceFile != null) {
                     Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.example.android.fileprovider",
+                            "com.example.finalmobilecomputingproject.fileprovider",
                             sourceFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = getExternalFilesDir("/Pictures");
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy(){
         super.onDestroy();
+
 
         //delete all images stored
 
