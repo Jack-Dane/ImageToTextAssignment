@@ -1,6 +1,7 @@
 package com.example.finalmobilecomputingproject;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -20,6 +21,17 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,26 +44,32 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_IMAGE_EDIT = 2;
 
     private ImageButton uiTakePictureImageButton;
+    private TextView uiMessageTextView;
     private String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main);
 
-        //destroy all files on each load
-        File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File[] allFiles = file.listFiles();
-
-        for(File f : allFiles){
-            Log.d("result", Boolean.toString(f.delete()));
-        }
-
         uiTakePictureImageButton = findViewById(R.id.ImageScreenTextView);
+        uiMessageTextView = findViewById(R.id.TextResultTextView);
+
+        //long click to edit images
+        uiTakePictureImageButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                editImage();
+                return true;
+            }
+        });
     }
 
+    //open camera intent
     public void openCamera(View view){
         if(askForCameraPermission()){
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -74,6 +92,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void editImage(){
+        if(currentPhotoPath != null){
+            Intent editIntent = new Intent(Intent.ACTION_EDIT);
+            editIntent.setDataAndType(Uri.parse(currentPhotoPath), "image/*");
+            editIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivityForResult(editIntent, REQUEST_IMAGE_EDIT);
+        }else{
+            //TODO alert to say "need to take picture first before you can edit"
+        }
+    }
+
     private boolean askForCameraPermission(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,
@@ -91,31 +120,54 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         //get the image which was taken back from the user
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && (requestCode == REQUEST_IMAGE_EDIT || requestCode == REQUEST_IMAGE_CAPTURE)) {
+            uiTakePictureImageButton.setImageDrawable(null);//refresh
             uiTakePictureImageButton.setImageURI(Uri.parse(currentPhotoPath));
+        }else{
+            Log.d("URI", currentPhotoPath);
         }
     }
 
+    //TODO create static class and make this static method
     private File createImageFile() throws IOException {//from android development page: https://developer.android.com/training/camera/photobasics
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "TEMP_IMG";
+        Log.d("fileName", imageFileName);
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        image.deleteOnExit();
+        File image = new File(storageDir, imageFileName + ".jpg");
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
-    @Override
-    public void onDestroy(){
+    public void readImage(View view) {
+        FirebaseVisionImage image;
+        try{
+            image = FirebaseVisionImage.fromFilePath(this, Uri.fromFile(new File(currentPhotoPath)));
+            FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
 
-        super.onDestroy();
+            Task<FirebaseVisionText> result =
+                    detector.processImage(image)
+                            .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                                @Override
+                                public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                                    // Task completed successfully
+                                    // ...
+                                    String result = firebaseVisionText.getText();
+                                    uiMessageTextView.setText(result);
+                                }
+                            })
+                            .addOnFailureListener(
+                                    new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            // Task failed with an exception
+                                            // ...
+                                        }
+                                    });
+        } catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }
