@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +40,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //destroy all files on each load
+        File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File[] allFiles = file.listFiles();
+
+        for(File f : allFiles){
+            Log.d("result", Boolean.toString(f.delete()));
+        }
 
         uiTakePictureImageButton = findViewById(R.id.ImageScreenTextView);
     }
@@ -56,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(sourceFile != null) {
                     Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.example.finalmobilecomputingproject.fileprovider",
+                            "com.example.finalmobilecomputingproject.provider",
                             sourceFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -91,12 +100,13 @@ public class MainActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir("/Pictures");
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
+        image.deleteOnExit();
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
@@ -105,10 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy(){
+
         super.onDestroy();
-
-
-        //delete all images stored
-
     }
 }
