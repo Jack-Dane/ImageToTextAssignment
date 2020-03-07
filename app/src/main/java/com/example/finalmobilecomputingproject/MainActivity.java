@@ -36,12 +36,13 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Observer{
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_EDIT = 2;
@@ -49,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton uiTakePictureImageButton;
     private TextView uiMessageTextView;
     private String currentPhotoPath;
+    private File currentPhotoFile;
+
+    private ImageToText imageToText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +60,12 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main);
 
+        createImageFile();
+
         uiTakePictureImageButton = findViewById(R.id.ImageScreenTextView);
         uiMessageTextView = findViewById(R.id.TextResultTextView);
+
+        imageToText = new ImageToText(this);
 
         //long click to edit images
         uiTakePictureImageButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -73,22 +81,15 @@ public class MainActivity extends AppCompatActivity {
     public void openCamera(View view){
         if(askForCameraPermission()){
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            File sourceFile;
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                sourceFile = null;
-                try{
-                    sourceFile = createImageFile();
-                }catch (IOException ex){
-                    //error
-                }
-                if(sourceFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.example.finalmobilecomputingproject.provider",
-                            sourceFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                }
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.finalmobilecomputingproject.provider",
+                        currentPhotoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
+        }else{
+            //TODO "Need to allow permission for app to take pictures"
         }
     }
 
@@ -123,51 +124,32 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && (requestCode == REQUEST_IMAGE_EDIT || requestCode == REQUEST_IMAGE_CAPTURE)) {
             uiTakePictureImageButton.setImageDrawable(null);//refresh
             uiTakePictureImageButton.setImageURI(Uri.parse(currentPhotoPath));
-        }else{
-            Log.d("URI", currentPhotoPath);
+            try {
+                readImage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    //TODO create static class and make this static method
-    private File createImageFile() throws IOException {//from android development page: https://developer.android.com/training/camera/photobasics
+    private void createImageFile(){//from android development page: https://developer.android.com/training/camera/photobasics
         // Create an image file name
         String imageFileName = "TEMP_IMG";
-        Log.d("fileName", imageFileName);
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = new File(storageDir, imageFileName + ".jpg");
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
-        return image;
+        currentPhotoFile = image;
     }
 
-    public void readImage(View view) {
-        FirebaseVisionImage image;
-        try{
-            image = FirebaseVisionImage.fromFilePath(this, Uri.fromFile(new File(currentPhotoPath)));
-            FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+    public void readImage() throws IOException{
+        Bitmap bp = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.fromFile(currentPhotoFile));
+        imageToText.convertImage(bp);
+    }
 
-            Task<FirebaseVisionText> result =
-                    detector.processImage(image)
-                            .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-                                @Override
-                                public void onSuccess(FirebaseVisionText firebaseVisionText) {
-                                    // Task completed successfully
-                                    // ...
-                                    String result = firebaseVisionText.getText();
-                                    uiMessageTextView.setText(result);
-                                }
-                            })
-                            .addOnFailureListener(
-                                    new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Task failed with an exception
-                                            // ...
-                                        }
-                                    });
-        } catch(IOException e){
-            e.printStackTrace();
-        }
+    @Override
+    public void updateText(String text) {
+        uiMessageTextView.setText(text);
     }
 }
