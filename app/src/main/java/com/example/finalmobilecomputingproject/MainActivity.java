@@ -20,7 +20,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -49,8 +52,13 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
     private ImageButton uiTakePictureImageButton;
     private TextView uiMessageTextView;
+    private Spinner uiLanguageSpinner;
+
     private String currentPhotoPath;
     private File currentPhotoFile;
+    private TextToTextTranslation mTextToTextTranslation;
+    private String currentText;
+    private ArrayList<String> availableLanguages;
 
     private ImageToText imageToText;
 
@@ -64,8 +72,15 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
         uiTakePictureImageButton = findViewById(R.id.ImageScreenTextView);
         uiMessageTextView = findViewById(R.id.TextResultTextView);
+        uiLanguageSpinner = findViewById(R.id.uiLanguageSelectSpinner);
 
         imageToText = new ImageToText(this);
+
+        mTextToTextTranslation = new TextToTextTranslation(this);
+        availableLanguages = mTextToTextTranslation.getAllLanguages();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, availableLanguages);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        uiLanguageSpinner.setAdapter(adapter);
 
         //long click to edit images
         uiTakePictureImageButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -114,8 +129,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
             return true;
         }
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.P)
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -132,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
         }
     }
 
+    //move out of main activity
     private void createImageFile(){//from android development page: https://developer.android.com/training/camera/photobasics
         // Create an image file name
         String imageFileName = "TEMP_IMG";
@@ -150,6 +165,11 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
     @Override
     public void updateText(String text) {
+        mTextToTextTranslation.TranslateText(text);
+    }
+
+    @Override
+    public void updateTranslatedText(String text) {
         uiMessageTextView.setText(text);
     }
 }
