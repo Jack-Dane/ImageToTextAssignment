@@ -24,16 +24,24 @@ public class TextToTextTranslation implements OnSuccessListener<Void>, OnFailure
 
     TextToTextTranslation(Observer observer){
         mObserver = observer;
-
-
     }
 
-    void TranslateText(String text){
+    void TranslateText(String text, String fromLanguage, String toLanguage){
         mText = text;
 
+        int translationLanguage = 0;
+        int originLanguage = 0;
+
+        try{
+            originLanguage = FirebaseTranslateLanguage.languageForLanguageCode(fromLanguage);
+            translationLanguage = FirebaseTranslateLanguage.languageForLanguageCode(toLanguage);
+        }catch (NullPointerException ex){
+            ex.printStackTrace();
+        }
+
         FirebaseTranslatorOptions options = new FirebaseTranslatorOptions.Builder()
-                .setSourceLanguage(FirebaseTranslateLanguage.EN)
-                .setTargetLanguage(FirebaseTranslateLanguage.FR)
+                .setSourceLanguage(originLanguage)
+                .setTargetLanguage(translationLanguage)
                 .build();
 
         englishSpanishTranslator = FirebaseNaturalLanguage.getInstance().getTranslator(options);
@@ -61,8 +69,7 @@ public class TextToTextTranslation implements OnSuccessListener<Void>, OnFailure
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                // Error.
-                                // ...
+                                //TODO deal with error
                             }
                         });
     }

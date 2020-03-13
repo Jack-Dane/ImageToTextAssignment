@@ -47,19 +47,20 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements Observer{
 
+    //Final request intent values
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_EDIT = 2;
 
+    //UI elements
     private ImageButton uiTakePictureImageButton;
     private TextView uiMessageTextView;
-    private Spinner uiLanguageSpinner;
+    private Spinner uiOriginLanguageSpinner;
+    private Spinner uiDestinationLanguageSpinner;
 
+    //Misc
     private String currentPhotoPath;
     private File currentPhotoFile;
     private TextToTextTranslation mTextToTextTranslation;
-    private String currentText;
-    private ArrayList<String> availableLanguages;
-
     private ImageToText imageToText;
 
     @Override
@@ -72,15 +73,18 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
         uiTakePictureImageButton = findViewById(R.id.ImageScreenTextView);
         uiMessageTextView = findViewById(R.id.TextResultTextView);
-        uiLanguageSpinner = findViewById(R.id.uiLanguageSelectSpinner);
+        uiOriginLanguageSpinner = findViewById(R.id.uiLanguageOriginSelectSpinner);
+        uiDestinationLanguageSpinner = findViewById(R.id.uiLanguageDestinationSelectSpinner);
 
         imageToText = new ImageToText(this);
 
         mTextToTextTranslation = new TextToTextTranslation(this);
-        availableLanguages = mTextToTextTranslation.getAllLanguages();
+        ArrayList<String> availableLanguages = mTextToTextTranslation.getAllLanguages();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, availableLanguages);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        uiLanguageSpinner.setAdapter(adapter);
+
+        uiOriginLanguageSpinner.setAdapter(adapter);
+        uiDestinationLanguageSpinner.setAdapter(adapter);
 
         //long click to edit images
         uiTakePictureImageButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -165,7 +169,10 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
     @Override
     public void updateText(String text) {
-        mTextToTextTranslation.TranslateText(text);
+        String fromLanguage = uiOriginLanguageSpinner.getSelectedItem().toString();
+        String toLanguage = uiDestinationLanguageSpinner.getSelectedItem().toString();
+
+        mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage);
     }
 
     @Override

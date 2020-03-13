@@ -13,11 +13,24 @@
         android:onClick="openCamera"
         android:scaleType="fitCenter" />
     
-    <Spinner
-        android:id="@+id/uiLanguageSelectSpinner"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+    
+        <Spinner
+            android:id="@+id/uiLanguageOriginSelectSpinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Spinner
+            android:id="@+id/uiLanguageDestinationSelectSpinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/TextResultTextView"
