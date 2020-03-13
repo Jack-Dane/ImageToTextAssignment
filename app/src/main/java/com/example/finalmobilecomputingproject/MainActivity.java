@@ -21,6 +21,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -56,12 +57,14 @@ public class MainActivity extends AppCompatActivity implements Observer{
     private TextView uiMessageTextView;
     private Spinner uiOriginLanguageSpinner;
     private Spinner uiDestinationLanguageSpinner;
+    private Button uiShareButton;
 
     //Misc
     private String currentPhotoPath;
     private File currentPhotoFile;
     private TextToTextTranslation mTextToTextTranslation;
     private ImageToText imageToText;
+    private String currentlyTranslatedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
         uiMessageTextView = findViewById(R.id.TextResultTextView);
         uiOriginLanguageSpinner = findViewById(R.id.uiLanguageOriginSelectSpinner);
         uiDestinationLanguageSpinner = findViewById(R.id.uiLanguageDestinationSelectSpinner);
+        uiShareButton = findViewById(R.id.uiShareButton);
 
         imageToText = new ImageToText(this);
 
@@ -110,6 +114,20 @@ public class MainActivity extends AppCompatActivity implements Observer{
         }else{
             //TODO "Need to allow permission for app to take pictures"
         }
+    }
+
+    public void shareButtonPress(View view){
+        //TODO share image and text via different methods
+        Intent shareIntent = new Intent();
+        Uri imageUri = FileProvider.getUriForFile(
+                MainActivity.this,
+                "com.example.finalmobilecomputingproject.provider",
+                currentPhotoFile);
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, currentlyTranslatedText);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.setType("image/jpeg");
+        startActivity(Intent.createChooser(shareIntent, null));
     }
 
     public void editImage(){
@@ -177,6 +195,8 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
     @Override
     public void updateTranslatedText(String text) {
+        currentlyTranslatedText = text;
+
         uiMessageTextView.setText(text);
     }
 }
