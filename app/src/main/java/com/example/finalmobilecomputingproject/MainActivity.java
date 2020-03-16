@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
         String fromLanguage = uiOriginLanguageSpinner.getSelectedItem().toString();
         String toLanguage = uiDestinationLanguageSpinner.getSelectedItem().toString();
 
-        mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage);
+        mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage,this);
     }
 
     @Override
