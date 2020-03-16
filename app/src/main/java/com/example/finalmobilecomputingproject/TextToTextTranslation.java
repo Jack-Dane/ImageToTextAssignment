@@ -80,6 +80,7 @@ public class TextToTextTranslation{
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d("Error", "Error");
                 //TODO error
             }
         });
