@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent">
+
+    <ImageButton
+        android:id="@+id/ImageScreenTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:scaleType="fitCenter" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Spinner
+            android:id="@+id/uiLanguageOriginSelectSpinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Spinner
+            android:id="@+id/uiLanguageDestinationSelectSpinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/uiShareButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Share"
+            android:layout_weight="1">
+        </Button>
+
+        <Button
+            android:id="@+id/uiSaveButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Save"
+            android:layout_weight="1">
+        </Button>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/TextResultTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:scrollbars="vertical"/>
+
+</LinearLayout>
