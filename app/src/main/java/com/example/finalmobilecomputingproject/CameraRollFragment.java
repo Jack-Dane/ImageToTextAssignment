@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-
 public class CameraRollFragment extends Fragment {
 
     private DataBaseConnection dataBaseConnection;
@@ -38,7 +37,6 @@ public class CameraRollFragment extends Fragment {
         DatabaseTextView databaseTextView;
 
         for(ImageData imgData : storedImages) {
-            Log.d("Data", imgData.mTranslatedText);
             databaseTextView = new DatabaseTextView();
 
             Bundle bundle = new Bundle();

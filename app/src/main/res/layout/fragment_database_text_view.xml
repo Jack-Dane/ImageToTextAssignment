@@ -5,20 +5,31 @@
     android:id="@+id/uiDisplayImageDataLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/uiDateDisplayTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:background="@color/buttonColor"
+        android:textColor="@color/textColor"
+        android:padding="5dp"/>
 
     <TextView
         android:id="@+id/uiOriginTextDisplayTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/viewBackgroundColor"
+        android:textColor="@color/textColor"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/uiTranslatedDisplayTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/viewBackgroundColor"
+        android:textColor="@color/textColor"
+        android:padding="10dp"/>
 </LinearLayout>

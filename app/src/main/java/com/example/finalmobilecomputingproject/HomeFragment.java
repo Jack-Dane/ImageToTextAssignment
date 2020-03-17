@@ -137,7 +137,6 @@ public class HomeFragment extends Fragment implements Observer{
     }
 
     private void shareButtonPress(View view){
-        //TODO share image and text via different methods
         Intent shareIntent = new Intent();
         Uri imageUri = FileProvider.getUriForFile(
                 Objects.requireNonNull(getActivity()),
@@ -173,13 +172,15 @@ public class HomeFragment extends Fragment implements Observer{
     }
 
     private void save() throws IOException {
-        //TODO error checks
+        if(!currentlyTranslatedText.equals("") || !originText.equals("")){
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            String date = simpleDateFormat.format(calendar.getTime());
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String date = simpleDateFormat.format(calendar.getTime());
-
-        dbConnection.insertImageData(currentlyTranslatedText, originText, date);
+            dbConnection.insertImageData(currentlyTranslatedText, originText, date);
+        }else{
+            //TODO toast error code
+        }
     }
 
     @Override
@@ -198,7 +199,7 @@ public class HomeFragment extends Fragment implements Observer{
         }
     }
 
-    //move out of main activity
+    //TODO move out of main activity
     private void createImageFile(){//from android development page: https://developer.android.com/training/camera/photobasics
         // Create an image file name
         String imageFileName = "TEMP_IMG";

@@ -14,8 +14,8 @@ import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends FragmentActivity {
 
-    private static final int NUM_PAGES = 3;
-    private String[] tabs = new String[] {"Calendar", "Translator", "Camera Roll"};
+    private static final int NUM_PAGES = 2;
+    private String[] tabs = new String[] {"Translator", "Camera Roll"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,6 @@ public class MainActivity extends FragmentActivity {
         ViewPager2 viewPager = findViewById(R.id.pager);
         FragmentStateAdapter pagerAdapter = new ScreenSlidePagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);
-        viewPager.setCurrentItem(1);
 
         //create the tab layout selector
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -46,10 +45,8 @@ public class MainActivity extends FragmentActivity {
         public Fragment createFragment(int position) {
             switch(position){
                 case 0:
-                    return new CalendarFragment();
-                case 1:
                     return new HomeFragment();
-                case 2:
+                case 1:
                     return new CameraRollFragment();
             }
             return new HomeFragment();
