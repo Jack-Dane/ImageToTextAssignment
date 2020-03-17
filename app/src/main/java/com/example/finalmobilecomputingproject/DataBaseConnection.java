@@ -2,16 +2,19 @@ package com.example.finalmobilecomputingproject;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.net.ConnectException;
+import java.util.ArrayList;
 
 public class DataBaseConnection extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "TranslatorDatabase";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     public DataBaseConnection(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -22,7 +25,7 @@ public class DataBaseConnection extends SQLiteOpenHelper {
         String query = "CREATE TABLE ImageData (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "TRANSLATED_MESSAGE TEXT," +
-                "IMAGE BLOB," +
+                "ORIGIN_MESSAGE TEXT," +
                 "DATE TEXT);";
         db.execSQL(query);
     }
@@ -32,17 +35,51 @@ public class DataBaseConnection extends SQLiteOpenHelper {
 
     }
 
-    public void insertImageData(String translatedText, byte[] image, String date){
+    public void insertImageData(String translatedText, String originText, String date){
         SQLiteDatabase translateDatabase = getWritableDatabase();
         ContentValues insertValued = new ContentValues();
-        insertValued.put("TRANSLATED_TEXT", translatedText);
-        insertValued.put("IMAGE", image);
+        insertValued.put("TRANSLATED_MESSAGE", translatedText);
+        insertValued.put("ORIGIN_MESSAGE", originText);
         insertValued.put("DATE", date);
         translateDatabase.insert("ImageData", null, insertValued);
     }
 
-    public void getAllFromDatabase(){
+    public ArrayList<ImageData> getAllFromDatabase(){
+        SQLiteDatabase db;
 
+        /*
+        //DELETE DATABASE CONTENT
+        db = getWritableDatabase();
+        db.execSQL("delete from ImageData");
+         */
+
+        ArrayList<ImageData> imageDataList = new ArrayList<>();
+
+        db = getReadableDatabase();
+        Cursor cursor = db.query("ImageData", new String[] { "_id", "TRANSLATED_MESSAGE", "ORIGIN_MESSAGE", "DATE"},
+                null, null, null, null, null );
+
+        int id;
+        String translatedText;
+        String date;
+        String originText;
+
+        if(cursor != null) {
+            if(cursor.moveToFirst()){
+                do{
+                    id = Integer.parseInt(cursor.getString(0));
+                    translatedText = cursor.getString(1);
+                    originText = cursor.getString(2);
+                    date = cursor.getString(3);
+
+                    imageDataList.add(new ImageData(id, translatedText, originText, date));
+                }while (cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+        }
+
+        return imageDataList;
     }
 
 }

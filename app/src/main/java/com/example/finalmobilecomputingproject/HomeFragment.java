@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +25,13 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -47,6 +53,9 @@ public class HomeFragment extends Fragment implements Observer{
     private TextToTextTranslation mTextToTextTranslation;
     private ImageToText imageToText;
     private String currentlyTranslatedText;
+    private Button uiSaveButton;
+    private DataBaseConnection dbConnection;
+    private String originText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,10 +63,13 @@ public class HomeFragment extends Fragment implements Observer{
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         createImageFile();
 
+        dbConnection = new DataBaseConnection(rootView.getContext());
+
         uiTakePictureImageButton = rootView.findViewById(R.id.ImageScreenTextView);
         uiMessageTextView = rootView.findViewById(R.id.TextResultTextView);
         uiOriginLanguageSpinner = rootView.findViewById(R.id.uiLanguageOriginSelectSpinner);
         uiDestinationLanguageSpinner = rootView.findViewById(R.id.uiLanguageDestinationSelectSpinner);
+        uiSaveButton = rootView.findViewById(R.id.uiSaveButton);
         Button uiShareButton = rootView.findViewById(R.id.uiShareButton);
 
         imageToText = new ImageToText(this);
@@ -92,6 +104,17 @@ public class HomeFragment extends Fragment implements Observer{
             @Override
             public void onClick(View v) {
                 shareButtonPress(v);
+            }
+        });
+
+        uiSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    save();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -149,6 +172,16 @@ public class HomeFragment extends Fragment implements Observer{
         }
     }
 
+    private void save() throws IOException {
+        //TODO error checks
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        String date = simpleDateFormat.format(calendar.getTime());
+
+        dbConnection.insertImageData(currentlyTranslatedText, originText, date);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -186,6 +219,7 @@ public class HomeFragment extends Fragment implements Observer{
     public void updateText(String text) {
         String fromLanguage = uiOriginLanguageSpinner.getSelectedItem().toString();
         String toLanguage = uiDestinationLanguageSpinner.getSelectedItem().toString();
+        originText = text;
 
         mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage,getContext());
     }
