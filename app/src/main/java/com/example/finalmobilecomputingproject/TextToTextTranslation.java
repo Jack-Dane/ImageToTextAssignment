@@ -13,6 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
@@ -30,15 +31,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class TextToTextTranslation{
+public class TextToTextTranslation implements Observable {
 
     private FirebaseTranslator englishSpanishTranslator;
     private String mText;
-    private Observer mObserver;
+    private ArrayList<Observer> mObservers;
+
     final private String API_KEY = "AIzaSyCH-emgcqcZFsbKnB34yRkVN-nLR-6v0_g";
 
-    TextToTextTranslation(Observer observer){
-        mObserver = observer;
+    TextToTextTranslation(){
+        mObservers = new ArrayList<Observer>();
     }
 
     ArrayList<String> getAllLanguages(){
@@ -72,7 +74,8 @@ public class TextToTextTranslation{
                             JSONObject json = new JSONObject(response);
                             JSONObject data = json.getJSONObject("data");
                             JSONArray array = data.getJSONArray("translations");
-                            mObserver.updateTranslatedText(array.getJSONObject(0).get("translatedText").toString());
+                            mText = array.getJSONObject(0).get("translatedText").toString();
+                            notifyObservers();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -80,12 +83,28 @@ public class TextToTextTranslation{
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("Error", "Error");
-                //TODO error
+                mText = "Failed to translate the text, make sure that the languages have been set before taking the picture";
+                notifyObservers();
             }
         });
 
         queue.add(stringRequest);
     }
 
+    @Override
+    public void addObserver(Observer o) {
+        mObservers.add(o);
+    }
+
+    @Override
+    public void removerObserver(Observer o) {
+        mObservers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer o: mObservers) {
+            o.updateTranslatedText(mText);
+        }
+    }
 }

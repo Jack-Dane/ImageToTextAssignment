@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -72,9 +73,12 @@ public class HomeFragment extends Fragment implements Observer{
         uiSaveButton = rootView.findViewById(R.id.uiSaveButton);
         Button uiShareButton = rootView.findViewById(R.id.uiShareButton);
 
-        imageToText = new ImageToText(this);
+        imageToText = new ImageToText();
+        imageToText.addObserver(this);
 
-        mTextToTextTranslation = new TextToTextTranslation(this);
+        mTextToTextTranslation = new TextToTextTranslation();
+        mTextToTextTranslation.addObserver(this);
+
         ArrayList<String> availableLanguages = mTextToTextTranslation.getAllLanguages();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(rootView.getContext(), R.layout.support_simple_spinner_dropdown_item, availableLanguages);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -132,21 +136,25 @@ public class HomeFragment extends Fragment implements Observer{
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }else{
-            //TODO "Need to allow permission for app to take pictures" TOAST class!!!!
+            Toast.makeText(this.getContext(), "Please enable the camera to take pictures", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void shareButtonPress(View view){
-        Intent shareIntent = new Intent();
-        Uri imageUri = FileProvider.getUriForFile(
-                Objects.requireNonNull(getActivity()),
-                "com.example.finalmobilecomputingproject.provider",
-                currentPhotoFile);
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, currentlyTranslatedText);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        shareIntent.setType("image/jpeg");
-        startActivity(Intent.createChooser(shareIntent, null));
+        if((currentlyTranslatedText != null && originText != null) || (currentlyTranslatedText != "" && originText != "")){
+            Intent shareIntent = new Intent();
+            Uri imageUri = FileProvider.getUriForFile(
+                    Objects.requireNonNull(getActivity()),
+                    "com.example.finalmobilecomputingproject.provider",
+                    currentPhotoFile);
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, currentlyTranslatedText);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            shareIntent.setType("image/jpeg");
+            startActivity(Intent.createChooser(shareIntent, null));
+        }else{
+            Toast.makeText(this.getContext(), "You need to take a picture before you can share", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void editImage(){
@@ -156,7 +164,7 @@ public class HomeFragment extends Fragment implements Observer{
             editIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivityForResult(editIntent, REQUEST_IMAGE_EDIT);
         }else{
-            //TODO alert to say "need to take picture first before you can edit"
+            Toast.makeText(this.getContext(), "Please take a picture first by click the square", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -167,19 +175,22 @@ public class HomeFragment extends Fragment implements Observer{
                     100);
             return (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED);
         }else{
+            //if already given permission, return true
             return true;
         }
     }
 
     private void save() throws IOException {
-        if(!currentlyTranslatedText.equals("") || !originText.equals("")){
+        if((currentlyTranslatedText != null && originText != null) || (currentlyTranslatedText != "" && originText != "")){
+            //check to see if the user has taken a picture
+
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
             String date = simpleDateFormat.format(calendar.getTime());
 
             dbConnection.insertImageData(currentlyTranslatedText, originText, date);
         }else{
-            //TODO toast error code
+            Toast.makeText(this.getContext(), "A picture needs to be taken before you can save", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -228,10 +239,6 @@ public class HomeFragment extends Fragment implements Observer{
     @Override
     public void updateTranslatedText(String text) {
         currentlyTranslatedText = text;
-
         uiMessageTextView.setText(text);
     }
-
-
-
 }

@@ -21,16 +21,14 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class ImageToText implements OnSuccessListener<FirebaseVisionText>, OnFailureListener{
+public class ImageToText implements OnSuccessListener<FirebaseVisionText>, OnFailureListener, Observable{
 
-    private Observer mObserver;
     private String mImageText;
+    private ArrayList<Observer> mObservers;
 
-    ImageToText(Observer observer)
-    {
-        mObserver = observer;
-    }
+    ImageToText() { mObservers = new ArrayList<Observer>(); }
 
     void convertImage(Bitmap bp){
         FirebaseVisionImage image;
@@ -46,12 +44,29 @@ public class ImageToText implements OnSuccessListener<FirebaseVisionText>, OnFai
     @Override
     public void onSuccess(FirebaseVisionText firebaseVisionText) {
         mImageText = firebaseVisionText.getText();
-        mObserver.updateText(mImageText);
+        notifyObservers();
     }
 
     @Override
     public void onFailure(@NonNull Exception e) {
-        mImageText = "Failed to read any text";
-        mObserver.updateText(mImageText);
+        mImageText = "";
+        notifyObservers();
+    }
+
+    @Override
+    public void addObserver(Observer o) {
+        mObservers.add(o);
+    }
+
+    @Override
+    public void removerObserver(Observer o) {
+        mObservers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer o : mObservers){
+            o.updateText(mImageText);
+        }
     }
 }
