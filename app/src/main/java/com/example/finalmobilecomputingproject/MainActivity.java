@@ -1,10 +1,14 @@
 package com.example.finalmobilecomputingproject;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -12,7 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.FirebaseApp;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final int NUM_PAGES = 2;
     private String[] tabs = new String[] {"Translator", "Camera Roll"};
@@ -25,7 +29,7 @@ public class MainActivity extends FragmentActivity {
         this.setContentView(R.layout.activity_main);
 
         ViewPager2 viewPager = findViewById(R.id.pager);
-        FragmentStateAdapter pagerAdapter = new ScreenSlidePagerAdapter(this);
+        FragmentStateAdapter pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager.setAdapter(pagerAdapter);
 
         //create the tab layout selector
@@ -36,8 +40,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
-        ScreenSlidePagerAdapter(FragmentActivity fa) {
-            super(fa);
+        ScreenSlidePagerAdapter(FragmentManager fragmentManager, Lifecycle lifecycle) {
+            super(fragmentManager, lifecycle);
         }
 
         @NonNull

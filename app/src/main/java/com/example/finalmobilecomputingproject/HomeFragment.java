@@ -141,7 +141,7 @@ public class HomeFragment extends Fragment implements Observer{
     }
 
     private void shareButtonPress(View view){
-        if((currentlyTranslatedText != null && originText != null) || (currentlyTranslatedText != "" && originText != "")){
+        if(currentlyTranslatedText != null && originText != null){
             Intent shareIntent = new Intent();
             Uri imageUri = FileProvider.getUriForFile(
                     Objects.requireNonNull(getActivity()),
@@ -181,11 +181,11 @@ public class HomeFragment extends Fragment implements Observer{
     }
 
     private void save() throws IOException {
-        if((currentlyTranslatedText != null && originText != null) || (currentlyTranslatedText != "" && originText != "")){
+        if(currentlyTranslatedText != null || originText != null){
             //check to see if the user has taken a picture
 
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY");
             String date = simpleDateFormat.format(calendar.getTime());
 
             dbConnection.insertImageData(currentlyTranslatedText, originText, date);

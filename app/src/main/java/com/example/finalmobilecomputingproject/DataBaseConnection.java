@@ -57,7 +57,7 @@ public class DataBaseConnection extends SQLiteOpenHelper {
 
         db = getReadableDatabase();
         Cursor cursor = db.query("ImageData", new String[] { "_id", "TRANSLATED_MESSAGE", "ORIGIN_MESSAGE", "DATE"},
-                null, null, null, null, null );
+                null, null, null, null, "DATE" );
 
         int id;
         String translatedText;
@@ -80,6 +80,11 @@ public class DataBaseConnection extends SQLiteOpenHelper {
         }
 
         return imageDataList;
+    }
+
+    public void deleteRow(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("ImageData","_id = ?", new String[]{ Integer.toString(id)});
     }
 
 }

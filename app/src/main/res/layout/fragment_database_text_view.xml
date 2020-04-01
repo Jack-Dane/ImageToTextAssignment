@@ -5,17 +5,19 @@
     android:id="@+id/uiDisplayImageDataLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
     android:orientation="vertical">
 
     <TextView
+        android:layout_marginTop="10sp"
         android:id="@+id/uiDateDisplayTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="25sp"
         android:background="@color/buttonColor"
         android:textColor="@color/textColor"
-        android:padding="5dp"/>
+        android:padding="5dp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"/>
 
     <TextView
         android:id="@+id/uiOriginTextDisplayTextView"
@@ -23,7 +25,9 @@
         android:layout_height="wrap_content"
         android:background="@color/viewBackgroundColor"
         android:textColor="@color/textColor"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"/>
 
     <TextView
         android:id="@+id/uiTranslatedDisplayTextView"
@@ -31,5 +35,13 @@
         android:layout_height="wrap_content"
         android:background="@color/viewBackgroundColor"
         android:textColor="@color/textColor"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"/>
+
+    <Button
+        android:id="@+id/uiDeleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="delete"/>
 </LinearLayout>
