@@ -1,7 +1,9 @@
 package com.example.finalmobilecomputingproject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -35,20 +39,33 @@ public class DatabaseArrayAdapter extends ArrayAdapter<ImageData> implements Vie
         dbConnection = new DataBaseConnection(getContext());
 
         int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        ImageData dataModel=(ImageData) object;
+        ImageData dataModel=getItem(position);
 
-        dbConnection.deleteRow(dataModel.getmId());
-        records.remove(dataModel);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        dialogBuilder.setMessage("Are you sure you want to delete this?")
+                .setTitle("Warning");
 
-        notifyDataSetChanged();
+        dialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
+            assert dataModel != null;
+            dbConnection.deleteRow(dataModel.getmId());
+            records.remove(dataModel);
+
+            notifyDataSetChanged();
+        });
+
+        dialogBuilder.setNegativeButton("No", (dialog, which) -> {
+            //do nothing
+        });
+
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
     }
 
     public static class ViewHolder{
         TextView date;
         TextView originText;
         TextView translatedText;
-        Button deleteButton;
+        ImageButton deleteButton;
     }
 
     @Override

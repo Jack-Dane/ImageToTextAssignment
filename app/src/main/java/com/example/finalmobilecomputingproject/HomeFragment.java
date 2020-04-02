@@ -189,6 +189,7 @@ public class HomeFragment extends Fragment implements Observer{
             String date = simpleDateFormat.format(calendar.getTime());
 
             dbConnection.insertImageData(currentlyTranslatedText, originText, date);
+            Toast.makeText(this.getContext(), "Your image data has been saved", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this.getContext(), "A picture needs to be taken before you can save", Toast.LENGTH_SHORT).show();
         }
