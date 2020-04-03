@@ -9,7 +9,7 @@
         android:title="Origin language"
         android:entries="@array/languages_array"
         android:entryValues="@array/languages_array"
-        android:popupBackground="@drawable/dark_theme_text_view"/>
+        android:popupBackground="@drawable/dark_theme_text_view" />
     <ListPreference
         android:key="translated_language"
         android:title="Translated Language"

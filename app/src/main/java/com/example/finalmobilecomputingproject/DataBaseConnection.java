@@ -60,7 +60,7 @@ public class DataBaseConnection extends SQLiteOpenHelper {
 
         db = getReadableDatabase();
         Cursor cursor = db.query("ImageData", new String[] { "_id", "TRANSLATED_MESSAGE", "ORIGIN_MESSAGE", "DATE", "ORIGIN_LANGUAGE", "TRANSLATED_LANGUAGE"},
-                null, null, null, null, "DATE" );
+                null, null, null, null, "_id DESC" );
 
         int id;
         String translatedText;
