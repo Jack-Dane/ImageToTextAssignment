@@ -51,6 +51,13 @@ public class CameraRollFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     @Override
+    public void onResume() {
+        //when the user switches screens, automatically update the adapter
+        super.onResume();
+        refresh();
+    }
+
+    @Override
     public void onRefresh() {
         //when the user has refreshed
         refresh();

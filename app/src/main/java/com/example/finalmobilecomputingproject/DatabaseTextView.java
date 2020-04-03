@@ -20,7 +20,7 @@ public class DatabaseTextView extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_database_text_view, container, false);
 
-        uiTranslatedTextView = rootView.findViewById(R.id.uiTranslatedDisplayTextView);
+        uiTranslatedTextView = rootView.findViewById(R.id.uiTranslatedTextDisplayTextView);
         uiOriginTextView = rootView.findViewById(R.id.uiOriginTextDisplayTextView);
         uiDateTextView = rootView.findViewById(R.id.uiDateDisplayTextView);
 

@@ -213,14 +213,17 @@ public class HomeFragment extends Fragment implements Observer{
     }
 
     private void save() {
-        if(currentlyTranslatedText != null || originText != null){
+        if(currentlyTranslatedText != null && originText != null){
             //check to see if the user has taken a picture
 
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY", Locale.UK);
             String date = simpleDateFormat.format(calendar.getTime());
 
-            dbConnection.insertImageData(currentlyTranslatedText, originText, date);
+            String originLanguage = Arrays.asList((getResources().getStringArray(R.array.languages_array))).get(uiOriginLanguageSpinner.getSelectedItemPosition());
+            String translateLanguage = Arrays.asList((getResources().getStringArray(R.array.languages_array))).get(uiDestinationLanguageSpinner.getSelectedItemPosition());
+
+            dbConnection.insertImageData(currentlyTranslatedText, originText, date, originLanguage, translateLanguage);
             Toast.makeText(this.getContext(), "Your image data has been saved", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this.getContext(), "A picture needs to be taken before you can save", Toast.LENGTH_SHORT).show();

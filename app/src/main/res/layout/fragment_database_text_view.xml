@@ -35,6 +35,15 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/uiOriginLanguageDisplayTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:background="@color/DarkButtonColorPressed"/>
+
+    <TextView
         android:id="@+id/uiOriginTextDisplayTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +53,16 @@
         android:background="@color/DarkViewBackgroundColor"/>
 
     <TextView
-        android:id="@+id/uiTranslatedDisplayTextView"
+        android:id="@+id/uiTranslatedLanguageDisplayTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:background="@color/DarkButtonColorPressed"/>
+
+    <TextView
+        android:id="@+id/uiTranslatedTextDisplayTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"

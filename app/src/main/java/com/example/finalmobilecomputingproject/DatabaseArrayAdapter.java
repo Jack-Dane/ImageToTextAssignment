@@ -65,6 +65,8 @@ public class DatabaseArrayAdapter extends ArrayAdapter<ImageData> implements Vie
         TextView date;
         TextView originText;
         TextView translatedText;
+        TextView originLanguage;
+        TextView translatedLanguage;
         ImageButton deleteButton;
     }
 
@@ -81,8 +83,10 @@ public class DatabaseArrayAdapter extends ArrayAdapter<ImageData> implements Vie
 
             convertView = inflater.inflate(R.layout.fragment_database_text_view, parent, false);
             viewHolder.date = convertView.findViewById(R.id.uiDateDisplayTextView);
+            viewHolder.originLanguage = convertView.findViewById(R.id.uiOriginLanguageDisplayTextView);
             viewHolder.originText = convertView.findViewById(R.id.uiOriginTextDisplayTextView);
-            viewHolder.translatedText = convertView.findViewById(R.id.uiTranslatedDisplayTextView);
+            viewHolder.translatedLanguage = convertView.findViewById(R.id.uiTranslatedLanguageDisplayTextView);
+            viewHolder.translatedText = convertView.findViewById(R.id.uiTranslatedTextDisplayTextView);
             viewHolder.deleteButton = convertView.findViewById(R.id.uiDeleteButton);
 
             result = convertView;
@@ -93,7 +97,9 @@ public class DatabaseArrayAdapter extends ArrayAdapter<ImageData> implements Vie
         }
 
         viewHolder.date.setText(textRecord.getDate());
+        viewHolder.originLanguage.setText(textRecord.getmOriginLanguage());
         viewHolder.originText.setText(textRecord.getmOriginText());
+        viewHolder.translatedLanguage.setText(textRecord.getmTranslatedLanguage());
         viewHolder.translatedText.setText(textRecord.getmTranslatedText());
         viewHolder.deleteButton.setOnClickListener(this);
         viewHolder.deleteButton.setTag(position);

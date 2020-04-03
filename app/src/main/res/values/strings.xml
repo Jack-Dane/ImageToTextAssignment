@@ -23,4 +23,6 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="delete_content_desc">Delete</string>
+
+    <string name="new_line">\n</string>
 </resources>
