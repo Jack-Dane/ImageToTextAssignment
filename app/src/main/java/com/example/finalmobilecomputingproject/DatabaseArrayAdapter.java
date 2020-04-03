@@ -41,7 +41,7 @@ public class DatabaseArrayAdapter extends ArrayAdapter<ImageData> implements Vie
         int position=(Integer) v.getTag();
         ImageData dataModel=getItem(position);
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), AlertDialog.THEME_DEVICE_DEFAULT_DARK);
         dialogBuilder.setMessage("Are you sure you want to delete this?")
                 .setTitle("Warning");
 

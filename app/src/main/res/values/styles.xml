@@ -1,11 +1,25 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/viewBackgroundColor</item>
-        <item name="colorPrimaryDark">@color/backgroundColor</item>
-        <item name="colorAccent">@color/buttonColor</item>
-        <item name="title">@string/app_name</item>
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:buttonStyle">@style/DarkThemeButtonStyle</item>
+        <item name="colorPrimary">@color/DarkViewBackgroundColor</item>
+        <item name="colorPrimaryDark">@color/DarkBackgroundColor</item>
+        <item name="colorAccent">@color/DarkButtonColor</item>
+        <item name="android:textColor">@color/DarkTextColor</item>
+        <item name="android:windowBackground">@color/DarkBackgroundColor</item>
+        <item name="alertDialogTheme">@style/DarkAlertStyle</item>
+        <item name="android:textColorAlertDialogListItem">@color/DarkTextColor</item>
     </style>
 
+    <style name="DarkThemeButtonStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/dark_theme_button</item>
+        <item name="android:textColor">@color/DarkTextColor</item>
+    </style>
+
+    <style name="DarkAlertStyle" parent="AlertDialog.AppCompat">
+        <item name="android:textColor">@color/DarkTextColor</item>
+        <item name="android:windowBackground">@color/DarkViewBackgroundColor</item>
+        <item name="android:popupBackground">@color/DarkViewBackgroundColor</item>
+    </style>
 </resources>

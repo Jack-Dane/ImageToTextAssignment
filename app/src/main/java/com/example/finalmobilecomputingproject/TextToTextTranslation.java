@@ -63,6 +63,7 @@ public class TextToTextTranslation implements Observable {
                 .appendQueryParameter("key", API_KEY)
                 .appendQueryParameter("source", fromLanguage)
                 .appendQueryParameter("target", toLanguage)
+                .appendQueryParameter("format", "text")
                 .appendQueryParameter("q", text)
                 .build().toString();
 

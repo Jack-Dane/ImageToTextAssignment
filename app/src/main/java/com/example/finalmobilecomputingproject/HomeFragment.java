@@ -2,9 +2,9 @@ package com.example.finalmobilecomputingproject;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,27 +12,25 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -41,6 +39,9 @@ public class HomeFragment extends Fragment implements Observer{
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_EDIT = 2;
+    private static final String ORIGIN_LANGUAGE_STATE = "originLanguage";
+    private static final String TRANSLATED_LANGUAGE_STATE = "translatedLanguage";
+    private static final String TAKEN_PICTURE_STATE = "takenPicture";
 
     //UI elements
     private ImageButton uiTakePictureImageButton;
@@ -79,13 +80,6 @@ public class HomeFragment extends Fragment implements Observer{
         mTextToTextTranslation = new TextToTextTranslation();
         mTextToTextTranslation.addObserver(this);
 
-        ArrayList<String> availableLanguages = mTextToTextTranslation.getAllLanguages();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(rootView.getContext(), R.layout.support_simple_spinner_dropdown_item, availableLanguages);
-        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-
-        uiOriginLanguageSpinner.setAdapter(adapter);
-        uiDestinationLanguageSpinner.setAdapter(adapter);
-
         //long click to edit images
         uiTakePictureImageButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -96,7 +90,6 @@ public class HomeFragment extends Fragment implements Observer{
         });
 
         uiTakePictureImageButton.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View v) {
                 openCamera(v);
@@ -104,7 +97,6 @@ public class HomeFragment extends Fragment implements Observer{
         });
 
         uiShareButton.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View v) {
                 shareButtonPress(v);
@@ -114,15 +106,55 @@ public class HomeFragment extends Fragment implements Observer{
         uiSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
-                    save();
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
+                save();
             }
         });
 
+        if(savedInstanceState != null){
+            uiOriginLanguageSpinner.setSelection(savedInstanceState.getInt(ORIGIN_LANGUAGE_STATE));
+            uiDestinationLanguageSpinner.setSelection(savedInstanceState.getInt(TRANSLATED_LANGUAGE_STATE));
+            if(savedInstanceState.getBoolean(TAKEN_PICTURE_STATE)){
+                uiTakePictureImageButton.setImageDrawable(null);
+                uiTakePictureImageButton.setImageURI(Uri.parse(currentPhotoPath));
+            }
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's choices
+        int translatedIndex = uiDestinationLanguageSpinner.getSelectedItemPosition();
+        int originIndex = uiOriginLanguageSpinner.getSelectedItemPosition();
+        boolean savedImage = !(uiTakePictureImageButton.getDrawable() == null);
+
+        savedInstanceState.putInt(ORIGIN_LANGUAGE_STATE, originIndex);
+        savedInstanceState.putInt(TRANSLATED_LANGUAGE_STATE, translatedIndex);
+        savedInstanceState.putBoolean(TAKEN_PICTURE_STATE, savedImage);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        SharedPreferences result = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getContext()));
+        String language;
+        int index;
+
+        if(uiOriginLanguageSpinner.getSelectedItemPosition() == 0){
+            language = result.getString("origin_language", "");
+            index = Arrays.asList((getResources().getStringArray(R.array.languages_array))).indexOf(language);
+            uiOriginLanguageSpinner.setSelection(index);
+        }
+
+        if(uiDestinationLanguageSpinner.getSelectedItemPosition() == 0){
+            language = result.getString("translated_language", "");
+            index = Arrays.asList((getResources().getStringArray(R.array.languages_array))).indexOf(language);
+            uiDestinationLanguageSpinner.setSelection(index);
+        }
+
+        super.onResume();
     }
 
     private void openCamera(View view){
@@ -180,12 +212,12 @@ public class HomeFragment extends Fragment implements Observer{
         }
     }
 
-    private void save() throws IOException {
+    private void save() {
         if(currentlyTranslatedText != null || originText != null){
             //check to see if the user has taken a picture
 
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY", Locale.UK);
             String date = simpleDateFormat.format(calendar.getTime());
 
             dbConnection.insertImageData(currentlyTranslatedText, originText, date);
@@ -211,8 +243,7 @@ public class HomeFragment extends Fragment implements Observer{
         }
     }
 
-    //TODO move out of main activity
-    private void createImageFile(){//from android development page: https://developer.android.com/training/camera/photobasics
+    private void createImageFile(){
         // Create an image file name
         String imageFileName = "TEMP_IMG";
         File storageDir = Objects.requireNonNull(getActivity()).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -230,11 +261,15 @@ public class HomeFragment extends Fragment implements Observer{
 
     @Override
     public void updateText(String text) {
-        String fromLanguage = uiOriginLanguageSpinner.getSelectedItem().toString();
-        String toLanguage = uiDestinationLanguageSpinner.getSelectedItem().toString();
-        originText = text;
+        if(!(uiOriginLanguageSpinner.getSelectedItemPosition() == 0 || uiDestinationLanguageSpinner.getSelectedItemPosition() == 0)){
+            String fromLanguage = Arrays.asList((getResources().getStringArray(R.array.languages_array_value))).get(uiOriginLanguageSpinner.getSelectedItemPosition());
+            String toLanguage = Arrays.asList((getResources().getStringArray(R.array.languages_array_value))).get(uiDestinationLanguageSpinner.getSelectedItemPosition());
+            originText = text;
 
-        mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage,getContext());
+            mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage,getContext());
+        }else{
+            Toast.makeText(getContext(),"Please select items before translating", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

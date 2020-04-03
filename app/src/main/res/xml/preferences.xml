@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <PreferenceCategory
-        android:title="Preferences">
-
-        <Preference
-            android:key="preference"
-            android:title="basic prefeence"
-            android:summary="change"/>
-    </PreferenceCategory>
-
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreferenceCompat
+        app:key="swipe_screens"
+        app:title="Enable swiping between tabs" />
+    <ListPreference
+        android:key="origin_language"
+        android:title="Origin language"
+        android:entries="@array/languages_array"
+        android:entryValues="@array/languages_array"
+        android:popupBackground="@drawable/dark_theme_text_view"/>
+    <ListPreference
+        android:key="translated_language"
+        android:title="Translated Language"
+        android:entries="@array/languages_array"
+        android:entryValues="@array/languages_array"
+        android:popupBackground="@drawable/dark_theme_text_view" />
 </PreferenceScreen>

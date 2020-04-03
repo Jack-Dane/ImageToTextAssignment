@@ -7,49 +7,49 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <RelativeLayout
-        android:orientation="horizontal"
+        android:background="@color/DarkButtonColor"
         android:layout_width="match_parent"
         android:layout_height="50sp"
         android:layout_marginLeft="10sp"
         android:layout_marginRight="10sp"
-        android:background="@color/buttonColor"
         android:layout_marginTop="10sp">
+
         <TextView
             android:id="@+id/uiDateDisplayTextView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textSize="30sp"
+            android:background="@null"
+            android:textSize="25sp"
             android:height="40sp"
-            android:background="@color/buttonColor"
-            android:textColor="@color/textColor"
-            android:padding="5sp" />
+            android:gravity="center"
+            android:padding="5sp"
+            tools:ignore="RelativeOverlap" />
 
         <ImageButton
             android:id="@+id/uiDeleteButton"
             android:layout_width="40sp"
             android:layout_height="50sp"
             android:background="@drawable/trashicon"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentEnd="true"
+            android:contentDescription="@string/delete_content_desc" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/uiOriginTextDisplayTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/viewBackgroundColor"
-        android:textColor="@color/textColor"
         android:padding="10dp"
         android:layout_marginLeft="10sp"
-        android:layout_marginRight="10sp"/>
+        android:layout_marginRight="10sp"
+        android:background="@color/DarkViewBackgroundColor"/>
 
     <TextView
         android:id="@+id/uiTranslatedDisplayTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/viewBackgroundColor"
-        android:textColor="@color/textColor"
         android:padding="10dp"
         android:layout_marginLeft="10sp"
-        android:layout_marginRight="10sp"/>
+        android:layout_marginRight="10sp"
+        android:background="@color/DarkViewBackgroundColor"/>
 
 </LinearLayout>

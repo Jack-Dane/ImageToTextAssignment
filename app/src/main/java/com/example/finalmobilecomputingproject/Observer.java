@@ -1,6 +1,6 @@
 package com.example.finalmobilecomputingproject;
 
 public interface Observer {
-    public void updateText(String text);
-    public void updateTranslatedText(String text);
+    void updateText(String text);
+    void updateTranslatedText(String text);
 }
