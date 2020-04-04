@@ -1,11 +1,9 @@
 <resources>
-    <string name="app_name">Translator App</string>
+    <string name="app_name">Translator</string>
 
     <string name="save_button_string">Save</string>
     <string name="share_button_string">Share</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
@@ -19,8 +17,7 @@
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
     <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="delete_content_desc">Delete</string>
 

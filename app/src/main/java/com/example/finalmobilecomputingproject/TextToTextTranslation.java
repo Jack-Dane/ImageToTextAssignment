@@ -84,7 +84,7 @@ public class TextToTextTranslation implements Observable {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mText = "Failed to translate the text, make sure that the languages have been set before taking the picture";
+                mText = "";
                 notifyObservers();
             }
         });

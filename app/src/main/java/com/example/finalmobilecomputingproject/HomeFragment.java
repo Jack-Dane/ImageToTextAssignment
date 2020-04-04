@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -42,6 +43,8 @@ public class HomeFragment extends Fragment implements Observer{
     private static final String ORIGIN_LANGUAGE_STATE = "originLanguage";
     private static final String TRANSLATED_LANGUAGE_STATE = "translatedLanguage";
     private static final String TAKEN_PICTURE_STATE = "takenPicture";
+    private static final String ORIGIN_TEXT_STATE = "originText";
+    private static final String TRANSLATED_TEXT_STATE = "translatedText";
 
     //UI elements
     private ImageButton uiTakePictureImageButton;
@@ -63,6 +66,7 @@ public class HomeFragment extends Fragment implements Observer{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
         createImageFile();
 
         dbConnection = new DataBaseConnection(rootView.getContext());
@@ -110,9 +114,53 @@ public class HomeFragment extends Fragment implements Observer{
             }
         });
 
+        uiOriginLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(uiTakePictureImageButton.getDrawable() != null){
+                    //user has taken a picture
+                    try {
+                        readImage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        uiDestinationLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(uiTakePictureImageButton.getDrawable() != null){
+                    //user has taken a picture
+                    try {
+                        readImage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         if(savedInstanceState != null){
             uiOriginLanguageSpinner.setSelection(savedInstanceState.getInt(ORIGIN_LANGUAGE_STATE));
             uiDestinationLanguageSpinner.setSelection(savedInstanceState.getInt(TRANSLATED_LANGUAGE_STATE));
+
+            originText = savedInstanceState.getString(ORIGIN_TEXT_STATE);
+            currentlyTranslatedText = savedInstanceState.getString(TRANSLATED_TEXT_STATE);
+            uiMessageTextView.setText(currentlyTranslatedText);
+
             if(savedInstanceState.getBoolean(TAKEN_PICTURE_STATE)){
                 uiTakePictureImageButton.setImageDrawable(null);
                 uiTakePictureImageButton.setImageURI(Uri.parse(currentPhotoPath));
@@ -125,15 +173,16 @@ public class HomeFragment extends Fragment implements Observer{
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the user's choices
+        super.onSaveInstanceState(savedInstanceState);
         int translatedIndex = uiDestinationLanguageSpinner.getSelectedItemPosition();
         int originIndex = uiOriginLanguageSpinner.getSelectedItemPosition();
-        boolean savedImage = !(uiTakePictureImageButton.getDrawable() == null);
+        boolean savedImage = uiTakePictureImageButton.getDrawable() != null;
 
         savedInstanceState.putInt(ORIGIN_LANGUAGE_STATE, originIndex);
         savedInstanceState.putInt(TRANSLATED_LANGUAGE_STATE, translatedIndex);
         savedInstanceState.putBoolean(TAKEN_PICTURE_STATE, savedImage);
-
-        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(ORIGIN_TEXT_STATE, originText);
+        savedInstanceState.putString(TRANSLATED_TEXT_STATE, currentlyTranslatedText);
     }
 
     @Override
@@ -201,6 +250,7 @@ public class HomeFragment extends Fragment implements Observer{
     }
 
     private boolean askForCameraPermission(){
+        //ask for permission to camera
         if(ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.CAMERA},
@@ -257,6 +307,7 @@ public class HomeFragment extends Fragment implements Observer{
         currentPhotoFile = image;
     }
 
+    //TODO IF IMAGE HAS BEEN TAKEN AND BOTH SPINNERS INDEX'S DON'T = 0, THEN CONTINUE, ELSE DONT READ IMAGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void readImage() throws IOException{
         Bitmap bp = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), Uri.fromFile(currentPhotoFile));
         imageToText.convertImage(bp);
@@ -264,14 +315,14 @@ public class HomeFragment extends Fragment implements Observer{
 
     @Override
     public void updateText(String text) {
-        if(!(uiOriginLanguageSpinner.getSelectedItemPosition() == 0 || uiDestinationLanguageSpinner.getSelectedItemPosition() == 0)){
+        if(uiOriginLanguageSpinner.getSelectedItemPosition() != 0 && uiDestinationLanguageSpinner.getSelectedItemPosition() != 0 && !text.equals("")) {
             String fromLanguage = Arrays.asList((getResources().getStringArray(R.array.languages_array_value))).get(uiOriginLanguageSpinner.getSelectedItemPosition());
             String toLanguage = Arrays.asList((getResources().getStringArray(R.array.languages_array_value))).get(uiDestinationLanguageSpinner.getSelectedItemPosition());
             originText = text;
 
-            mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage,getContext());
-        }else{
-            Toast.makeText(getContext(),"Please select items before translating", Toast.LENGTH_SHORT).show();
+            mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage, getContext());
+        }else if(text.equals("")){
+            Toast.makeText(getContext(),"No text could be read from the image", Toast.LENGTH_SHORT).show();
         }
     }
 

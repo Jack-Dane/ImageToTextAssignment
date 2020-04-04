@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_width="match_parent">
+
+    <ImageButton
+        android:id="@+id/ImageScreenTextView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/dark_theme_button"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="2">
+
+        <Spinner
+            android:id="@+id/uiLanguageOriginSelectSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:popupBackground="@drawable/dark_theme_text_view"
+            android:entries="@array/languages_array" />
+
+        <Spinner
+            android:id="@+id/uiLanguageDestinationSelectSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:popupBackground="@drawable/dark_theme_text_view"
+            android:entries="@array/languages_array" />
+
+        <Button
+            android:id="@+id/uiShareButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/share_button_string"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:textSize="22sp"
+            android:paddingLeft="20dp"
+            android:drawableStart="@drawable/share"
+            android:background="@drawable/dark_theme_button"/>
+
+        <Button
+            android:id="@+id/uiSaveButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/save_button_string"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:textSize="22sp"
+            android:paddingLeft="20dp"
+            android:drawableStart="@drawable/save"
+            android:background="@drawable/dark_theme_button"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+        <TextView
+            android:id="@+id/TextResultTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            android:textSize="24sp"
+            android:background="@color/DarkBackgroundColor"/>
+            <!--
+            android:text="hfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhfhfdsjhfh dhfe fehwfjh ejwhf"/>
+            -->
+    </ScrollView>
+</LinearLayout>
