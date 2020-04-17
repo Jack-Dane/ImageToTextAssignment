@@ -1,6 +1,6 @@
 package com.example.finalmobilecomputingproject;
 
-public interface Observer {
+public interface ImageToTextObserver {
     void updateText(String text);
-    void updateTranslatedText(String text);
+    void updateTextError();
 }

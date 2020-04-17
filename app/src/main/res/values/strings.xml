@@ -22,4 +22,5 @@
     <string name="delete_content_desc">Delete</string>
 
     <string name="new_line">\n</string>
+    <string name="take_picture">Take Picture</string>
 </resources>

@@ -17,10 +17,7 @@ import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
-import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,33 +28,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class TextToTextTranslation implements Observable {
+public class TextToTextTranslation implements TextToTextSubject {
 
-    private FirebaseTranslator englishSpanishTranslator;
+    private static TextToTextTranslation textToTextTranslation;
     private String mText;
-    private ArrayList<Observer> mObservers;
+    private String mOriginLanguage;
+    private String mTranslatedLanguage;
+    private ArrayList<TextToTextTranslationObserver> mObservers;
+    private boolean mSuccessfulTranslation = false;
 
     final private String API_KEY = "AIzaSyCH-emgcqcZFsbKnB34yRkVN-nLR-6v0_g";
 
-    TextToTextTranslation(){
-        mObservers = new ArrayList<Observer>();
+    public static TextToTextTranslation getInstance(){
+        if(textToTextTranslation == null){
+            textToTextTranslation = new TextToTextTranslation();
+        }
+        return textToTextTranslation;
     }
 
-    ArrayList<String> getAllLanguages(){
-
-        //TODO needs to be changed to another method, maybe manually write
-        Set<Integer> intValues = FirebaseTranslateLanguage.getAllLanguages();
-        ArrayList<String> returnLanguagesList = new ArrayList<String>();
-
-        for (int in : intValues){
-            returnLanguagesList.add(FirebaseTranslateLanguage.languageCodeForLanguage(in));
-        }
-
-        return returnLanguagesList;
+    private TextToTextTranslation(){
+        mObservers = new ArrayList<TextToTextTranslationObserver>();
     }
 
     void TranslateText(String text, String fromLanguage, String toLanguage, Context context){
         RequestQueue queue = Volley.newRequestQueue(context);
+
+        mOriginLanguage = fromLanguage;
+        mTranslatedLanguage = toLanguage;
+
         String url = Uri.parse("https://www.googleapis.com/language/translate/v2")
                 .buildUpon()
                 .appendQueryParameter("key", API_KEY)
@@ -75,7 +73,11 @@ public class TextToTextTranslation implements Observable {
                             JSONObject json = new JSONObject(response);
                             JSONObject data = json.getJSONObject("data");
                             JSONArray array = data.getJSONArray("translations");
-                            mText = array.getJSONObject(0).get("translatedText").toString();
+                            if(array.getJSONObject(0).has("detectedSourceLanguage")){
+                                mOriginLanguage = array.getJSONObject(0).getString("detectedSourceLanguage");
+                            }
+                            mText = array.getJSONObject(0).getString("translatedText");
+                            mSuccessfulTranslation = true;
                             notifyObservers();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -84,6 +86,7 @@ public class TextToTextTranslation implements Observable {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mSuccessfulTranslation = false;
                 mText = "";
                 notifyObservers();
             }
@@ -93,19 +96,25 @@ public class TextToTextTranslation implements Observable {
     }
 
     @Override
-    public void addObserver(Observer o) {
-        mObservers.add(o);
+    public void addObserver(TextToTextTranslationObserver o) {
+        if(!mObservers.contains(o)){
+            mObservers.add(o);
+        }
     }
 
     @Override
-    public void removerObserver(Observer o) {
+    public void removeObserver(TextToTextTranslationObserver o) {
         mObservers.remove(o);
     }
 
     @Override
     public void notifyObservers() {
-        for (Observer o: mObservers) {
-            o.updateTranslatedText(mText);
+        for (TextToTextTranslationObserver o: mObservers) {
+            if(mSuccessfulTranslation){
+                o.updateTranslatedText(mText, mOriginLanguage, mTranslatedLanguage);
+            }else{
+                o.updateTranslatedTextError();
+            }
         }
     }
 }

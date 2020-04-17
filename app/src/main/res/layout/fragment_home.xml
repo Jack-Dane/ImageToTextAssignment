@@ -15,7 +15,8 @@
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/dark_theme_button"/>
+        android:background="@drawable/dark_theme_button"
+        android:contentDescription="@string/take_picture" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +30,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:popupBackground="@drawable/dark_theme_text_view"
-            android:entries="@array/languages_array" />
+            android:entries="@array/languages_array_origin" />
 
         <Spinner
             android:id="@+id/uiLanguageDestinationSelectSpinner"
@@ -80,7 +81,7 @@
         <TextView
             android:id="@+id/TextResultTextView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:padding="5dp"
             android:textSize="24sp"

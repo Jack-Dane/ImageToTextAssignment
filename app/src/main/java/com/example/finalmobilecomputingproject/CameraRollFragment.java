@@ -2,6 +2,8 @@ package com.example.finalmobilecomputingproject;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -28,18 +30,19 @@ public class CameraRollFragment extends Fragment implements SwipeRefreshLayout.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_camera_roll, container, false);
+    }
 
-        View rootView = inflater.inflate(R.layout.fragment_camera_roll, container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        dataBaseConnection = new DataBaseConnection(view.getContext());
 
-        dataBaseConnection = new DataBaseConnection(rootView.getContext());
+        uiDatabaseListView = view.findViewById(R.id.uiDatabaseListViewData);
 
-        uiDatabaseListView = rootView.findViewById(R.id.uiDatabaseListViewData);
-
-        uiSwipeRefreshLayout = rootView.findViewById(R.id.uiswipeRefreshLayout);
+        uiSwipeRefreshLayout = view.findViewById(R.id.uiswipeRefreshLayout);
         uiSwipeRefreshLayout.setOnRefreshListener(this);
 
         refresh();
-        return rootView;
     }
 
     public void refresh(){

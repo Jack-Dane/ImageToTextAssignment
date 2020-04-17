@@ -30,7 +30,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:popupBackground="@drawable/dark_theme_text_view"
-            android:entries="@array/languages_array" />
+            android:entries="@array/languages_array_origin" />
 
         <Spinner
             android:id="@+id/uiLanguageDestinationSelectSpinner"

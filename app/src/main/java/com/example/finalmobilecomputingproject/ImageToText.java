@@ -11,10 +11,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
-import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -23,12 +20,21 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ImageToText implements OnSuccessListener<FirebaseVisionText>, OnFailureListener, Observable{
+public class ImageToText implements OnSuccessListener<FirebaseVisionText>, OnFailureListener, ImageToTextSubject{
 
+    private static ImageToText imageToText;
     private String mImageText;
-    private ArrayList<Observer> mObservers;
+    private ArrayList<ImageToTextObserver> mObservers;
+    private boolean mSuccessfulRead = false;
 
-    ImageToText() { mObservers = new ArrayList<Observer>(); }
+    public static ImageToText getInstance(){
+        if(imageToText == null){
+            imageToText = new ImageToText();
+        }
+        return imageToText;
+    }
+
+    private ImageToText() { mObservers = new ArrayList<ImageToTextObserver>(); }
 
     void convertImage(Bitmap bp){
         FirebaseVisionImage image;
@@ -44,29 +50,42 @@ public class ImageToText implements OnSuccessListener<FirebaseVisionText>, OnFai
     @Override
     public void onSuccess(FirebaseVisionText firebaseVisionText) {
         mImageText = firebaseVisionText.getText();
+        if(!mImageText.equals("")){
+            mSuccessfulRead = true;
+        }else{
+            mSuccessfulRead = false;
+        }
         notifyObservers();
     }
 
     @Override
     public void onFailure(@NonNull Exception e) {
+        e.printStackTrace();
         mImageText = "";
+        mSuccessfulRead = false;
         notifyObservers();
     }
 
     @Override
-    public void addObserver(Observer o) {
-        mObservers.add(o);
+    public void addObserver(ImageToTextObserver o) {
+        if(!mObservers.contains(o)){
+            mObservers.add(o);
+        }
     }
 
     @Override
-    public void removerObserver(Observer o) {
+    public void removeObserver(ImageToTextObserver o) {
         mObservers.remove(o);
     }
 
     @Override
     public void notifyObservers() {
-        for(Observer o : mObservers){
-            o.updateText(mImageText);
+        for(ImageToTextObserver o : mObservers){
+            if(mSuccessfulRead){
+                o.updateText(mImageText);
+            }else{
+                o.updateTextError();
+            }
         }
     }
 }
