@@ -50,12 +50,6 @@ public class DataBaseConnection extends SQLiteOpenHelper {
     public ArrayList<ImageData> getAllFromDatabase(){
         SQLiteDatabase db;
 
-        /*
-        //DELETE DATABASE CONTENT
-        db = getWritableDatabase();
-        db.execSQL("delete * from ImageData");
-         */
-
         ArrayList<ImageData> imageDataList = new ArrayList<>();
 
         db = getReadableDatabase();

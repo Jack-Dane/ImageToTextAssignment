@@ -322,8 +322,8 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
 
             dialogBuilder.setItems(new CharSequence[]
                             {"Edit", "Select", "Cancel"},
-                    (dialog, which) -> {
-                        switch (which) {
+                    (dialog, optionIndex) -> {
+                        switch (optionIndex) {
                             case 0:
                                 editImage();
                                 break;
@@ -346,14 +346,13 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
     }
 
     private void chooseImage(){
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, PICK_IMAGE);
+        Intent galleryPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryPickerIntent, PICK_IMAGE);
     }
 
     private void save() {
         if(mImageTranslated){
             //check to see if the user has taken a picture
-
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY", Locale.UK);
             String date = simpleDateFormat.format(calendar.getTime());
@@ -379,9 +378,9 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
                 assert selectedImageUri != null;
                 Cursor cursor = Objects.requireNonNull(getContext()).getContentResolver().query(selectedImageUri, projection, null, null, null);
                 assert cursor != null;
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 cursor.moveToFirst();
 
-                int columnIndex = cursor.getColumnIndex(projection[0]);
                 String picturePath = cursor.getString(columnIndex);
                 cursor.close();
                 mCurrentPhotoPath = picturePath;
@@ -452,14 +451,17 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
 
             mTextToTextTranslation.TranslateText(text, fromLanguage, toLanguage, getContext());
         }else if(text.equals("")){
-            Toast.makeText(getContext(),"Please select a translation language", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"No text can be read from the image, make sure to take a clear picture", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void updateTextError() {
-        //clear data
-        Toast.makeText(getContext(),"No text can be read from the image, please make sure to take a clear photo", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),"An error occurred, please try again", Toast.LENGTH_SHORT).show();
+        mOriginText = "";
+        mCurrentlyTranslatedText = "";
+        mImageTranslated = false;
+        uiMessageTextView.setText(mOriginText);
     }
 
     @Override
@@ -487,8 +489,11 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
 
     @Override
     public void updateTranslatedTextError() {
-        //clear data
-        Toast.makeText(getContext(),"The text cannot be translated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),"The text cannot be translated, make sure to choose the correct languages", Toast.LENGTH_SHORT).show();
+        mOriginText = "";
+        mCurrentlyTranslatedText = "";
+        mImageTranslated = false;
+        uiMessageTextView.setText(mCurrentlyTranslatedText);
     }
 
     private void galleryAddPic() {

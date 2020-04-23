@@ -50,18 +50,14 @@ public class ImageToText implements OnSuccessListener<FirebaseVisionText>, OnFai
     @Override
     public void onSuccess(FirebaseVisionText firebaseVisionText) {
         mImageText = firebaseVisionText.getText();
-        if(!mImageText.equals("")){
-            mSuccessfulRead = true;
-        }else{
-            mSuccessfulRead = false;
-        }
+        mSuccessfulRead = true;
         notifyObservers();
     }
 
     @Override
     public void onFailure(@NonNull Exception e) {
         e.printStackTrace();
-        mImageText = "";
+        mImageText = null;
         mSuccessfulRead = false;
         notifyObservers();
     }
