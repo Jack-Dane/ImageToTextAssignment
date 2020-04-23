@@ -22,9 +22,9 @@ import java.util.Objects;
 public class TabFragment extends Fragment {
 
     private static final int NUM_PAGES = 2;
-    private String[] tabs = new String[] {"Translator", "Camera Roll"};
-    private int[] tabIcons = new int[] {R.drawable.language, R.drawable.camera};
-    private ViewPager2 viewPager;
+    private String[] mTabs = new String[] {"Translator", "Camera Roll"};
+    private int[] mTabIcons = new int[] {R.drawable.language, R.drawable.camera};
+    private ViewPager2 mViewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,14 +33,14 @@ public class TabFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        viewPager = view.findViewById(R.id.pager);
+        mViewPager = view.findViewById(R.id.pager);
         FragmentStateAdapter pagerAdapter = new ScreenSlidePagerAdapter(this);
 
-        viewPager.setAdapter(pagerAdapter);
+        mViewPager.setAdapter(pagerAdapter);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
 
-        new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText(tabs[position]).setIcon(tabIcons[position])
+        new TabLayoutMediator(tabLayout, mViewPager,
+                (tab, position) -> tab.setText(mTabs[position]).setIcon(mTabIcons[position])
         ).attach();
     }
 
@@ -70,7 +70,7 @@ public class TabFragment extends Fragment {
     @Override
     public void onResume() {
         SharedPreferences result = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getContext()));
-        viewPager.setUserInputEnabled(result.getBoolean("swipe_screens", false));
+        mViewPager.setUserInputEnabled(result.getBoolean("swipe_screens", false));
         super.onResume();
     }
 }

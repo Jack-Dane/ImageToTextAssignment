@@ -24,19 +24,17 @@ import java.util.List;
 
 public class DatabaseArrayAdapter extends ArrayAdapter<ImageData> implements View.OnClickListener{
 
-    private Context context;
-    private List<ImageData> records;
-    private DataBaseConnection dbConnection;
+    private List<ImageData> mRecords;
+    private DataBaseConnection mDbConnection;
 
     public DatabaseArrayAdapter(List<ImageData> objects, Context context) {
         super(context, R.layout.fragment_database_text_view, objects);
-        records = objects;
-        this.context = context;
+        mRecords = objects;
     }
 
     @Override
     public void onClick(View v) {
-        dbConnection = new DataBaseConnection(getContext());
+        mDbConnection = new DataBaseConnection(getContext());
 
         int position=(Integer) v.getTag();
         ImageData dataModel=getItem(position);
@@ -47,8 +45,8 @@ public class DatabaseArrayAdapter extends ArrayAdapter<ImageData> implements Vie
 
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
             assert dataModel != null;
-            dbConnection.deleteRow(dataModel.getmId());
-            records.remove(dataModel);
+            mDbConnection.deleteRow(dataModel.getmId());
+            mRecords.remove(dataModel);
 
             notifyDataSetChanged();
         });

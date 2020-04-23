@@ -22,8 +22,8 @@ import java.util.ArrayList;
 
 public class CameraRollFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private DataBaseConnection dataBaseConnection;
-    private DatabaseArrayAdapter adapter;
+    private DataBaseConnection mDataBaseConnection;
+    private DatabaseArrayAdapter mAdapter;
     private ListView uiDatabaseListView;
     private SwipeRefreshLayout uiSwipeRefreshLayout;
 
@@ -35,7 +35,7 @@ public class CameraRollFragment extends Fragment implements SwipeRefreshLayout.O
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        dataBaseConnection = new DataBaseConnection(view.getContext());
+        mDataBaseConnection = new DataBaseConnection(view.getContext());
 
         uiDatabaseListView = view.findViewById(R.id.uiDatabaseListViewData);
 
@@ -46,11 +46,11 @@ public class CameraRollFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     public void refresh(){
-        ArrayList<ImageData> storedImages = dataBaseConnection.getAllFromDatabase();
+        ArrayList<ImageData> storedImages = mDataBaseConnection.getAllFromDatabase();
 
-        adapter = new DatabaseArrayAdapter(storedImages, getContext());
+        mAdapter = new DatabaseArrayAdapter(storedImages, getContext());
 
-        uiDatabaseListView.setAdapter(adapter);
+        uiDatabaseListView.setAdapter(mAdapter);
     }
 
     @Override
