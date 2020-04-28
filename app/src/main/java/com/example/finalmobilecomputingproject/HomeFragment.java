@@ -295,7 +295,7 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT, mCurrentlyTranslatedText);
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            shareIntent.setType("image/jpeg");
+            shareIntent.setType("image/*");
             startActivity(Intent.createChooser(shareIntent, null));
         }else{
             Toast.makeText(this.getContext(), "You need to take a picture before you can share", Toast.LENGTH_SHORT).show();
@@ -322,8 +322,8 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
 
             dialogBuilder.setItems(new CharSequence[]
                             {"Edit", "Select", "Cancel"},
-                    (dialog, optionIndex) -> {
-                        switch (optionIndex) {
+                    (dialog, which) -> {
+                        switch (which) {
                             case 0:
                                 editImage();
                                 break;
@@ -373,19 +373,22 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
             mImageTranslated = false;
             mImageCaptured = true;
             if(requestCode == PICK_IMAGE){
+
                 Uri selectedImageUri = data.getData();
+                //get URI from the data given back
+
                 String[] projection = {MediaStore.Images.Media.DATA};
                 assert selectedImageUri != null;
                 Cursor cursor = Objects.requireNonNull(getContext()).getContentResolver().query(selectedImageUri, projection, null, null, null);
                 assert cursor != null;
                 int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 cursor.moveToFirst();
-
                 String picturePath = cursor.getString(columnIndex);
                 cursor.close();
+
+                //change the current photo path and file
                 mCurrentPhotoPath = picturePath;
                 mCurrentPhotoFile = new File(picturePath);
-                Log.d("Path", mCurrentPhotoPath);
             }
             if(requestCode == REQUEST_IMAGE_CAPTURE || requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
                 if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
@@ -394,19 +397,23 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
                     CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     File source = new File(result.getUri().getPath());
 
-                    try (InputStream in = new FileInputStream(source)) {
-                        try (OutputStream out = new FileOutputStream(mCurrentPhotoFile)) {
+                    try (InputStream inputStream = new FileInputStream(source)) {
+                        try (OutputStream outputStream = new FileOutputStream(mCurrentPhotoFile)) {
                             // Transfer bytes from in to out
-                            byte[] buf = new byte[1024];
+                            byte[] buffer = new byte[1024];
+
                             int len;
-                            while ((len = in.read(buf)) > 0) {
-                                out.write(buf, 0, len);
+
+                            //while there are bytes
+                            while ((len = inputStream.read(buffer)) > 0) {
+                                outputStream.write(buffer, 0, len);
                             }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                //add image to the gallery
                 galleryAddPic();
             }
             uiTakePictureImageButton.setImageDrawable(null);//refresh

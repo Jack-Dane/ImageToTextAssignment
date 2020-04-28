@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true"
-        android:background="@drawable/take_picture">
+    <item android:state_pressed="true">
         <shape android:shape="rectangle" >
             <corners android:radius="10dp" />
             <gradient android:angle="-90" android:startColor="@color/DarkButtonColorPressed" android:endColor="@color/DarkButtonColor" />
         </shape>
     </item>
-    <item
-        android:background="@drawable/take_picture">
+    <item>
         <shape android:shape="rectangle">
             <corners android:radius="10dp" />
-            <gradient android:angle="-90" android:startColor="@color/DarkButtonColor" android:endColor="@color/DarkButtonColor" />
+            <solid android:color="@color/DarkButtonColor" />
         </shape>
     </item>
 </selector>
