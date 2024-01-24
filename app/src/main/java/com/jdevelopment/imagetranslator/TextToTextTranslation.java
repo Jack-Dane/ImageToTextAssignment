@@ -1,11 +1,7 @@
-package com.example.finalmobilecomputingproject;
+package com.jdevelopment.imagetranslator;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.JsonToken;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -13,20 +9,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.common.data.DataBufferObserver;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
-import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class TextToTextTranslation implements TextToTextSubject {
 

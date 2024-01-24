@@ -1,8 +1,5 @@
-package com.example.finalmobilecomputingproject;
+package com.jdevelopment.imagetranslator;
 
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 public class ImageData{
     private int mId;

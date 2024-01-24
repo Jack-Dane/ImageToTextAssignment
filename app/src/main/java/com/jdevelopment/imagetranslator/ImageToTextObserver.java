@@ -1,4 +1,4 @@
-package com.example.finalmobilecomputingproject;
+package com.jdevelopment.imagetranslator;
 
 public interface ImageToTextObserver {
     void updateText(String text);

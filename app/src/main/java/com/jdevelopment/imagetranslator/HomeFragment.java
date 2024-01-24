@@ -1,14 +1,12 @@
-package com.example.finalmobilecomputingproject;
+package com.jdevelopment.imagetranslator;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.net.InetAddresses;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -32,15 +30,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.vision.text.Text;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +46,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static com.google.android.gms.common.util.IOUtils.copyStream;
 
 public class HomeFragment extends Fragment implements ImageToTextObserver, TextToTextTranslationObserver {
 
@@ -276,7 +268,7 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
         if (takePictureIntent.resolveActivity(Objects.requireNonNull(getActivity()).getPackageManager()) != null) {
             createImageFile();
             Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                    "com.example.finalmobilecomputingproject.provider",
+                    "com.jdevelopment.imagetranslator.provider",
                     mCurrentPhotoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -290,7 +282,7 @@ public class HomeFragment extends Fragment implements ImageToTextObserver, TextT
             Intent shareIntent = new Intent();
             Uri imageUri = FileProvider.getUriForFile(
                     Objects.requireNonNull(getActivity()),
-                    "com.example.finalmobilecomputingproject.provider",
+                    "com.jdevelopment.imagetranslator.provider",
                     mCurrentPhotoFile);
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT, mCurrentlyTranslatedText);

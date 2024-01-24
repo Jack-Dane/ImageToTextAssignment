@@ -5,7 +5,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.example.finalmobilecomputingproject"
+        applicationId "com.jdevelopment.imagetranslator"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -24,7 +24,7 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
-    namespace 'com.example.finalmobilecomputingproject'
+    namespace "com.jdevelopment.imagetranslator"
 
 }
 

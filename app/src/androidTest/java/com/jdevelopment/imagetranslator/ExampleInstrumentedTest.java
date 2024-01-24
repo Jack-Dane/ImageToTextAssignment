@@ -1,4 +1,4 @@
-package com.example.finalmobilecomputingproject;
+package com.jdevelopment.imagetranslator;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.example.finalmobilecomputingproject", appContext.getPackageName());
+        assertEquals("com.jdevelopment.imagetranslator", appContext.getPackageName());
     }
 }

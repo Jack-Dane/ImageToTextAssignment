@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:500555714747:android:de9c086912109064c9199e",
         "android_client_info": {
-          "package_name": "com.example.finalmobilecomputingproject"
+          "package_name": "com.jdevelopment.imagetranslator"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "500555714747-qba0fol4po616vfjblk4bba55ib3h5d9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.finalmobilecomputingproject",
+            "package_name": "com.jdevelopment.imagetranslator",
             "certificate_hash": "cad4ee5e78e22fb994ccff18bc2cb3bb64d3974b"
           }
         },
