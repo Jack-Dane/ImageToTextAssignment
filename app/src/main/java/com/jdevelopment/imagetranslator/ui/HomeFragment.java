@@ -1,4 +1,4 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.ui;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -30,6 +30,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jdevelopment.imagetranslator.logic.DataBaseConnection;
+import com.jdevelopment.imagetranslator.logic.imagetotext.ImageToText;
+import com.jdevelopment.imagetranslator.logic.imagetotext.ImageToTextObserver;
+import com.jdevelopment.imagetranslator.R;
+import com.jdevelopment.imagetranslator.logic.texttranslation.TextToTextTranslation;
+import com.jdevelopment.imagetranslator.logic.texttranslation.TextToTextTranslationObserver;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.logic;
 
 import android.content.ContentValues;
 import android.content.Context;

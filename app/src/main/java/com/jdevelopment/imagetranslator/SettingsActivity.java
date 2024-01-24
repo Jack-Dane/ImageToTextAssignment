@@ -6,6 +6,9 @@ import android.view.MenuItem;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.jdevelopment.imagetranslator.R;
+import com.jdevelopment.imagetranslator.ui.Settings;
+
 public class SettingsActivity extends AppCompatActivity {
 
     @Override

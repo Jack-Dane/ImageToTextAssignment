@@ -1,4 +1,4 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.jdevelopment.imagetranslator.R;
+import com.jdevelopment.imagetranslator.ui.CameraRollFragment;
+import com.jdevelopment.imagetranslator.ui.HomeFragment;
 
 import java.util.Objects;
 

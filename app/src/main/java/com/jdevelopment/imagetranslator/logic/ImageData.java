@@ -1,4 +1,4 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.logic;
 
 
 public class ImageData{

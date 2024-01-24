@@ -1,4 +1,4 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.ui;
 
 import android.os.Bundle;
 
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.jdevelopment.imagetranslator.R;
 
 public class DatabaseTextView extends Fragment {
 

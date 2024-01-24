@@ -1,4 +1,4 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.logic.imagetotext;
 
 import android.graphics.Bitmap;
 
@@ -30,7 +30,7 @@ public class ImageToText implements OnSuccessListener<FirebaseVisionText>, OnFai
 
     private ImageToText() { mObservers = new ArrayList<ImageToTextObserver>(); }
 
-    void convertImage(Bitmap bp){
+    public void convertImage(Bitmap bp){
         FirebaseVisionImage image;
         image = FirebaseVisionImage.fromBitmap(bp);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();

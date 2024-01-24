@@ -6,7 +6,7 @@
     
     <fragment
         android:id="@+id/tab_fragment"
-        android:name="com.jdevelopment.imagetranslator.TabFragment"
+        android:name="com.jdevelopment.imagetranslator.ui.TabFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>

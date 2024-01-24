@@ -1,4 +1,4 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.logic.texttranslation;
 
 import android.content.Context;
 import android.net.Uri;
@@ -38,7 +38,7 @@ public class TextToTextTranslation implements TextToTextSubject {
         mObservers = new ArrayList<TextToTextTranslationObserver>();
     }
 
-    void TranslateText(String text, String fromLanguage, String toLanguage, Context context){
+    public void TranslateText(String text, String fromLanguage, String toLanguage, Context context){
         RequestQueue queue = Volley.newRequestQueue(context);
 
         mOriginLanguage = fromLanguage;

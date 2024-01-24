@@ -1,4 +1,4 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.ui;
 
 import android.os.Bundle;
 
@@ -11,6 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.jdevelopment.imagetranslator.logic.DataBaseConnection;
+import com.jdevelopment.imagetranslator.logic.DatabaseArrayAdapter;
+import com.jdevelopment.imagetranslator.logic.ImageData;
+import com.jdevelopment.imagetranslator.R;
 
 import java.util.ArrayList;
 

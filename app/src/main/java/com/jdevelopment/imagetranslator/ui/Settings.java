@@ -1,8 +1,10 @@
-package com.jdevelopment.imagetranslator;
+package com.jdevelopment.imagetranslator.ui;
 
 import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.jdevelopment.imagetranslator.R;
 
 public class Settings extends PreferenceFragmentCompat {
 
